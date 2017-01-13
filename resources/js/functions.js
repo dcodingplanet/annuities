@@ -1,5 +1,8 @@
 $(document).ready(function () {
-
+    
+    /*
+     * Used keycodes
+     */
     const KEYCODE = {
         x: 88,
         y: 89,
@@ -8,13 +11,37 @@ $(document).ready(function () {
         enter: 13,
         esc: 27
     };
+    
+    const MAX_LOAN_TIME = 100;
+    
+    /**
+     * It calculates and draws the info respective the graph.
+     * This function is called on click of the calculate button
+     * @returns {void}
+     */
+    function calculateAndDraw(){
+        var calculationInfo = getCalculationInfo();
+        var calculationListObjectContainer = createCalculationList(calculationInfo);
+        var sumZinsAndTilgung = calculateAllZinsAndTilgung(calculationListObjectContainer);
+        var resultObject = {
+            annuitaetMonatlich: calculationInfo.annuitaetMonatlich,
+            zinsGesamt: sumZinsAndTilgung.zinsGesamt
+        };
+        outputResults(resultObject);
+        createGraph(calculationListObjectContainer);
+    }
 
-    function getAnnuitaeten() {
+    /**
+     * This function calculate some basic alues e.g. the annuities and returns a
+     * calculationInfo object
+     * @returns {void}
+     */
+    function getCalculationInfo() {
         var darlehen = $("#darlehen").val();
         var zinssatz = $("#zinssatz").val();
         var laufzeit = $("#laufzeit").val();
 
-        if (laufzeit > 100) {
+        if (laufzeit > MAX_LOAN_TIME) {
             return;
         }
 
@@ -24,34 +51,20 @@ $(document).ready(function () {
         var mq = 1 + mi;
         var coeff = Math.pow(q, laufzeit);
         var coeffMonat = Math.pow(mq, laufzeit * 12);
-
         var annuitaet = darlehen * ((coeff * i) / (coeff - 1));
         var annuitaetMonatlich = darlehen * ((coeffMonat * mi) / (coeffMonat - 1));
-
-//        $("#dcpresult").text("Die jährliche Annuität beträgt: " + annuitaet.toFixed(2) + "€");
-        $("#dcpresultMonth").text("Die monatliche Annuität beträgt: " + annuitaetMonatlich.toFixed(2) + "€");
-        $(".result").show(500);
-
         var calculationInfo = {
             "darlehen": darlehen,
             "zinssatz": zinssatz,
             "laufzeit": laufzeit,
             "q": q,
             "i": i,
-            "annuitaet": annuitaet
+            "annuitaet": annuitaet,
+            "annuitaetMonatlich": annuitaetMonatlich
         };
-
-        createCalculationList(calculationInfo);
+        
+        return calculationInfo;
     }
-
-    function calculateTilgung(calculationInfo, year_t) {
-
-        var tilgung_t = calculationInfo.darlehen *
-            ((calculationInfo.q - 1) / (Math.pow(calculationInfo.q, calculationInfo.laufzeit) - 1)) *
-            Math.pow(calculationInfo.q, year_t - 1);
-        return tilgung_t;
-    }
-
 
     /**
      * Creates the calculation List for output and returns the List as an 
@@ -91,29 +104,39 @@ $(document).ready(function () {
 
             calculationListObjectContainer.push(calculationListObject);
         }
-
-
-        calculateAllZinsAndTilgung(calculationListObjectContainer);
-        createGraph(calculationListObjectContainer);
-
         return calculationListObjectContainer;
     }
 
+    /**
+     * Calculate the sum of the Zins and the Tilgung.
+     * 
+     * @param {array} objectContainer The array with the calculationListObjects
+     * @returns {Object} 
+     */
     function calculateAllZinsAndTilgung(objectContainer) {
         var tilgungGesamt = 0;
         var zinsGesamt = 0;
         var darlehen = Number.parseFloat($("#darlehen").val()).toFixed(2);
+        /*
+         * Iterate over the objectContainer and sum up the tilgung and zins
+         */
         objectContainer.forEach(function (el) {
             tilgungGesamt += Number.parseFloat(el.tilgung);
             zinsGesamt += Number.parseFloat(el.zins);
         });
 
-        $("#zinsSum").text("Bank verdient insgesamt: " + zinsGesamt.toFixed(2) + "€");
-
         return {
             tilgungGesamt: tilgungGesamt,
             zinsGesamt: zinsGesamt
         };
+    }
+    
+    function calculateTilgung(calculationInfo, year_t) {
+
+        var tilgung_t = calculationInfo.darlehen *
+            ((calculationInfo.q - 1) / (Math.pow(calculationInfo.q, calculationInfo.laufzeit) - 1)) *
+            Math.pow(calculationInfo.q, year_t - 1);
+        return tilgung_t;
     }
 
     function createListHeader() {
@@ -147,7 +170,6 @@ $(document).ready(function () {
         $("body").keyup(function (event) {
             
             if(event.which == KEYCODE.esc){
-                console.log("lets focus another element")
                 $("#toggleList").focus();
                 $("#toggleList").click();
             }
@@ -186,7 +208,7 @@ $(document).ready(function () {
         $("#calculate").click(function () {
             $("#annuitaetenTable tr").remove();
             $("svg").remove();
-            getAnnuitaeten();
+            calculateAndDraw();
         });
 
         $("#empty").click(function () {
@@ -198,6 +220,12 @@ $(document).ready(function () {
             $("#annuitaetenTable").toggle(0);
             $("#map").toggle(0);
         });
+    }
+    
+    function outputResults(resultObject){
+        $("#zinsSum").text("Bank verdient insgesamt: " + resultObject.zinsGesamt.toFixed(2) + "€");
+        $("#dcpresultMonth").text("Die monatliche Annuität beträgt: " + resultObject.annuitaetMonatlich.toFixed(2) + "€");
+        $(".result").show(500);
     }
 
     function createGraph(objectContainer) {
@@ -310,6 +338,8 @@ $(document).ready(function () {
 
     }
 
-
+    /*
+     * Start The Application with setting the eventHandlers
+     */
     setEventHandler();
 });
