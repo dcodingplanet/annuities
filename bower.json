@@ -1,0 +1,22 @@
+{
+  "name": "annuitaeten",
+  "authors": [
+    "Daniel Schwarz <daniel.schwarz@badw-muenchen.de>"
+  ],
+  "description": "A calculator for investment issues.",
+  "main": "",
+  "license": "MIT",
+  "homepage": "dcodingplanet.de",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "d3": "^3.0.0",
+    "bootstrap": "^3.3.7"
+  }
+}

@@ -1,0 +1,80 @@
+@import url('https://fonts.googleapis.com/css?family=Indie+Flower');
+*{
+    margin: 0;
+    padding: 0;
+}
+body{
+    /*font-family: 'Indie Flower', cursive;*/
+    font-family: 'Arial';
+}
+
+.dcpwrapper{
+    /*box-shadow: 1px 1px 3px;*/
+    margin-top: 50px
+}
+
+.dcpform{
+    box-shadow: 1px 1px 3px;
+    padding: 23px;
+}
+
+.dcpcolumn{
+    /*border: 1px solid;*/
+    /*box-shadow: 1px 1px 5px;*/
+    padding-top: 14px;
+    font-size: 18pt;
+}
+
+input[type='text']{
+    font-size: large;
+}
+
+.result{
+    display: none;
+    font-size: 16pt;
+    padding: 6px 0px 6px 23px;
+    margin: 3px;
+}
+
+#map{
+    display: none;
+}
+
+.input-group-addon{
+    width: 70px;
+}
+
+.dcpformbtn{
+    min-width: 130px;
+}
+
+#annuitaetenTable tr td {
+    font-size: large;
+}
+
+#zinsSum{
+    box-shadow: 1px 1px 10px;
+    border-radius: 3px;
+    background-color: #f47a42;
+}
+
+.axis path,
+.axis line {
+    fill: none;
+    stroke: #000;
+    shape-rendering: crispEdges;
+}
+
+.areaZins {
+    fill: #f47a42;
+    stroke: red;
+    stroke-width: 3;
+    z-index: 99;
+    opacity: 0.8;
+}
+.areaTilgung{
+    fill: #74f295;
+    stroke: green;
+    stroke-width: 3;
+    opacity: 0.8;
+}

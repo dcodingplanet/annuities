@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Annuitäten für Bauvorhaben</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.css" />
+        <link rel="stylesheet" href="resources/css/style.css" />
+        <script src="bower_components/jquery/dist/jquery.js"></script>
+        <script src="bower_components/bootstrap/dist/js/bootstrap.js"></script>
+        <script src="bower_components/d3/d3.js"></script>
+        <script src="resources/js/functions.js"></script>
+    </head>
+    <body>
+
+
+        <div class="container-fluid dcpwrapper">
+            <div class="row">
+                <div class="col-md-1"></div>
+                <div class="col-md-5 dcpform">
+                    <h1>Annuitätenrechner</h1>
+                    <div class="form-group">
+                        <label class="sr-only" for="darlehen">Darlehen</label>
+                        <div class="input-group">
+                            <input type="text" class="form-control" id="darlehen" placeholder="Darlehen in Euro">
+                            <div class="input-group-addon">€</div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="sr-only" for="zinssatz">Darlehen</label>
+                        <div class="input-group">
+                            <input type="text" class="form-control" id="zinssatz" placeholder="Zinssatz in Prozent">
+                            <div class="input-group-addon">%</div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="sr-only" for="laufzeit">Darlehen</label>
+                        <div class="input-group">
+                            <input type="text" class="form-control" id="laufzeit" placeholder="Laufzeit in Jahren">
+                            <div class="input-group-addon"><span class="glyphicon glyphicon-time"></span></div>
+                        </div>
+                    </div>
+                    <div>
+                        <button type="submit" id="calculate" class="btn btn-primary dcpformbtn"><span class="glyphicon glyphicon-ok"></span>&nbsp;Berechnen</button>
+                        <button type="submit" id="empty" class="btn btn-primary dcpformbtn"><span class="glyphicon glyphicon-trash"></span>&nbsp;Leeren</button>
+                        <button type="submit" id="toggleList" class="btn btn-primary dcpformbtn"><span class="glyphicon glyphicon-retweet"></span>&nbsp;Umschalten Liste/Grafik</button>
+                    </div>
+
+                    <div class="result" id="dcpresult"></div>
+                    <div class="result" id="dcpresultMonth"></div>
+                    <div class="result" id="zinsSum"></div>
+                </div>
+                <div class="col-md-5 dcplist">
+                    <table class="table table-responsive table-striped table-hover" id="annuitaetenTable">
+                        <thead>
+                            <tr>
+                                <th>Jahr</th>
+                                <th>Restschuld</th>
+                                <th>Zins</th>
+                                <th>Tilgung</th>
+                                <th>Annuität</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                    <div id="map"></div>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>
