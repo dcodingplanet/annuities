@@ -78,3 +78,12 @@ input[type='text']{
     stroke-width: 3;
     opacity: 0.8;
 }
+.overlay {
+  fill: none;
+  pointer-events: all;
+}
+
+.focus circle {
+  fill: none;
+  stroke: steelblue;
+}

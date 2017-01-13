@@ -12,7 +12,7 @@ $(document).ready(function () {
         enter: 13,
         esc: 27
     };
-    
+
     const MAX_FRAME = 500;
 
     const MAX_LOAN_TIME = 100;
@@ -232,7 +232,7 @@ $(document).ready(function () {
     }
 
     function outputResults(resultObject) {
-        $("#zinsSum").text("Bank verdient insgesamt: " + resultObject.zinsGesamt.toFixed(2) + "€");
+        $("#zinsSum").text("Die Bank verdient insgesamt: " + resultObject.zinsGesamt.toFixed(2) + "€");
         $("#dcpresultMonth").text("Die monatliche Annuität beträgt: " + resultObject.annuitaetMonatlich.toFixed(2) + "€");
         $(".result").show(500);
     }
@@ -366,10 +366,52 @@ $(document).ready(function () {
                 .attr("d", areaTilgung);
         }
 
+        /*
+         * Create the focus element as a circle with a text anchor
+         */
+        var focus = svg.append("g")
+            .attr("class", "focus")
+            .style("display", "none");
+
+        focus.append("circle")
+            .attr("r", 6);
+
+        focus.append("text")
+            .attr("x", 9)
+            .attr("dy", ".35em");
+
+        svg.append("rect")
+            .attr("class", "overlay")
+            .attr("width", width)
+            .attr("height", height)
+            .on("mouseover", function () {
+                focus.style("display", null);
+            })
+            .on("mouseout", function () {
+                focus.style("display", "none");
+            })
+            .on("mousemove", mousemoveFunc);
+        
+        /**
+         * The function called on mousemove within the overlay.
+         * It gets the inverted x coordinate of the current mouse postion,
+         * and manipulates the focus element by setting the related coordinates
+         * and the text.
+         * 
+         * @returns {void}
+         */
+        function mousemoveFunc() {
+            var x0 = x.invert(d3.mouse(this)[0]);
+            x0 = Math.floor(x0);
+            var data = objectContainer[x0];
+            focus.attr("transform", "translate(" + x(data.jahr) + "," + y(data.tilgung) + ")");
+            focus.select("text").text("Jahr: " + data.jahr + " Tilgung: " + data.tilgung + "€");
+        }
+
     }
 
     function animateZinssatz() {
-        if(animationCounter > 50){
+        if (animationCounter > 50) {
             animationCounter = 0;
             startTime = (new Date).getTime();
             return;
