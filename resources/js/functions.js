@@ -1,5 +1,5 @@
 $(document).ready(function () {
-    
+
     /*
      * Used keycodes
      */
@@ -8,18 +8,24 @@ $(document).ready(function () {
         y: 89,
         z: 90,
         s: 83,
+        a: 65,
         enter: 13,
         esc: 27
     };
     
+    const MAX_FRAME = 500;
+
     const MAX_LOAN_TIME = 100;
-    
+
+    var startTime = (new Date).getTime();
+    var animationCounter = 0;
+
     /**
      * It calculates and draws the info respective the graph.
      * This function is called on click of the calculate button
      * @returns {void}
      */
-    function calculateAndDraw(){
+    function calculateAndDraw() {
         var calculationInfo = getCalculationInfo();
         var calculationListObjectContainer = createCalculationList(calculationInfo);
         var sumZinsAndTilgung = calculateAllZinsAndTilgung(calculationListObjectContainer);
@@ -62,7 +68,7 @@ $(document).ready(function () {
             "annuitaet": annuitaet,
             "annuitaetMonatlich": annuitaetMonatlich
         };
-        
+
         return calculationInfo;
     }
 
@@ -130,7 +136,7 @@ $(document).ready(function () {
             zinsGesamt: zinsGesamt
         };
     }
-    
+
     function calculateTilgung(calculationInfo, year_t) {
 
         var tilgung_t = calculationInfo.darlehen *
@@ -168,12 +174,12 @@ $(document).ready(function () {
         $("#darlehen").focus();
 
         $("body").keyup(function (event) {
-            
-            if(event.which == KEYCODE.esc){
+
+            if (event.which == KEYCODE.esc) {
                 $("#toggleList").focus();
                 $("#toggleList").click();
             }
-            
+
             if (event.which == KEYCODE.enter) {
                 $('#calculate').click();
             }
@@ -202,6 +208,9 @@ $(document).ready(function () {
                     increaseOrDecreaseInputField("laufzeit", "int", delta);
                     $("#calculate").click();
                 }
+                if (event.which == KEYCODE.a && event.shiftKey) {
+                    window.requestAnimationFrame(animateZinssatz);
+                }
             }
         });
 
@@ -221,21 +230,21 @@ $(document).ready(function () {
             $("#map").toggle(0);
         });
     }
-    
-    function outputResults(resultObject){
+
+    function outputResults(resultObject) {
         $("#zinsSum").text("Bank verdient insgesamt: " + resultObject.zinsGesamt.toFixed(2) + "€");
         $("#dcpresultMonth").text("Die monatliche Annuität beträgt: " + resultObject.annuitaetMonatlich.toFixed(2) + "€");
         $(".result").show(500);
     }
-    
+
     /**
      * Get the translation string.
      * 
      * @param {Object} translationObject
      * @returns {String} The translation string
      */
-    function getTranslationString(translationObject){
-        return "translate("+ translationObject.left + "," + translationObject.top + ")";
+    function getTranslationString(translationObject) {
+        return "translate(" + translationObject.left + "," + translationObject.top + ")";
     }
 
     function createGraph(objectContainer) {
@@ -324,7 +333,7 @@ $(document).ready(function () {
             .style("font-size", fontSizeTextAnchor)
             .style("font-color", fontColor)
             .text("Jahre");
-        
+
         /*
          * Create the text anchors
          */
@@ -357,6 +366,23 @@ $(document).ready(function () {
                 .attr("d", areaTilgung);
         }
 
+    }
+
+    function animateZinssatz() {
+        if(animationCounter > 50){
+            animationCounter = 0;
+            startTime = (new Date).getTime();
+            return;
+        }
+        var currentTime = (new Date).getTime();
+        var elapsedTime = currentTime - startTime;
+        if (elapsedTime > MAX_FRAME) {
+            startTime = currentTime;
+            increaseOrDecreaseInputField("zinssatz", "float", 0.1);
+            $("#calculate").click();
+            animationCounter++;
+        }
+        window.requestAnimationFrame(animateZinssatz);
     }
 
     /*
