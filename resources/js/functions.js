@@ -227,14 +227,30 @@ $(document).ready(function () {
         $("#dcpresultMonth").text("Die monatliche Annuität beträgt: " + resultObject.annuitaetMonatlich.toFixed(2) + "€");
         $(".result").show(500);
     }
+    
+    /**
+     * Get the translation string.
+     * 
+     * @param {Object} translationObject
+     * @returns {String} The translation string
+     */
+    function getTranslationString(translationObject){
+        return "translate("+ translationObject.left + "," + translationObject.top + ")";
+    }
 
     function createGraph(objectContainer) {
         /*
          * Set some dimensions. The width and the height in function of
          */
-        var margin = {top: 20, right: 20, bottom: 20, left: 70};
+        var margin = {top: 40, right: 40, bottom: 40, left: 70};
         var width = $(".dcplist").width();
         var height = $(window).height() - 2 * margin.top - 4 * margin.bottom;
+        var translateYaxisText = {left: 130, top: -10};
+        var translateXaxisText = {left: width / 2, top: 40};
+        var translateXaxis = {left: 0, top: height};
+        var translateYaxis = {left: 0, top: 0};
+        var fontSizeTextAnchor = "16pt";
+        var fontColor = "#f47a42";
 
         var x = d3.scale.linear()
             .range([0, width]);
@@ -259,7 +275,7 @@ $(document).ready(function () {
             .attr("width", width + margin.left + margin.right)
             .attr("height", height + margin.top + margin.bottom)
             .append("g")
-            .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+            .attr("transform", getTranslationString(margin));
 
 
         /*
@@ -300,8 +316,14 @@ $(document).ready(function () {
 
         svg.append("g")
             .attr("class", "x axis")
-            .attr("transform", "translate(0," + height + ")")
-            .call(xAxis);
+            .attr("transform", getTranslationString(translateXaxis))
+            .call(xAxis)
+            .append("text")
+            .attr("transform", getTranslationString(translateXaxisText))
+            .style("text-anchor", "end")
+            .style("font-size", fontSizeTextAnchor)
+            .style("font-color", fontColor)
+            .text("Jahre");
         
         /*
          * Create the text anchors
@@ -310,11 +332,10 @@ $(document).ready(function () {
             .attr("class", "y axis")
             .call(yAxis)
             .append("text")
-            .attr("transform", "rotate(-90)")
-            .attr("y", 6)
-            .attr("dy", ".71em")
+            .attr("transform", getTranslationString(translateYaxisText))
+            .style("font-size", fontSizeTextAnchor)
             .style("text-anchor", "end")
-            .text("€");
+            .text("Zinsen/Tilgung in €");
 
         /*
          * Create the two paths, one for Zins and one for Tilgung.
